@@ -1,0 +1,16 @@
+{
+  "source": "Unity",
+  "applications": [
+    {
+      "app_key": "application.generated.unity.pseudohapticsdisplay.exe",
+      "launch_type": "url",
+      "url": "steam://launch/",
+      "action_manifest_path": "D:\\Unity Project\\Pseudo-Haptics display\\actions.json",
+      "strings": {
+        "en_us": {
+          "name": "Pseudo-Haptics display [Testing]"
+        }
+      }
+    }
+  ]
+}
