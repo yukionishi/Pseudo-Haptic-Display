@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Agent : MonoBehaviour
 {
-    Manager manager;
+    ExperimentManager experimentManager;
     GameObject controller;
     VIVEController viveController;
     Target target;
@@ -17,7 +17,7 @@ public class Agent : MonoBehaviour
         // Start is called before the first frame update
     void Start()
     {
-        manager = GameObject.Find("Manager").GetComponent<Manager>();
+        experimentManager = GameObject.Find("Manager").GetComponent<ExperimentManager>();
         controller = GameObject.FindGameObjectWithTag("Controller");
         viveController = controller.GetComponent<VIVEController>();
         target = GameObject.Find("Target").GetComponent<Target>();
@@ -28,14 +28,14 @@ public class Agent : MonoBehaviour
     {       
         CaliblateHandPos();
 
-        ControlMovement(manager);
+        ControlMovement(experimentManager);
     }
 
     //エージェントの位置キャリブレーション
     void CaliblateHandPos()
     {
-        isCalibrate = manager.isCalibrate;
-        DistanceCameraToHand = manager.DistanceCameraToHand;
+        isCalibrate = experimentManager.isCalibrate;
+        DistanceCameraToHand = experimentManager.DistanceCameraToHand;
 
         //キャリブレーションモードの判定
         if (isCalibrate)
@@ -59,13 +59,13 @@ public class Agent : MonoBehaviour
     /// <summary>
     /// エージェントの動作制御
     /// </summary>
-    /// <param name="manager"></param>
-    void ControlMovement(Manager manager)
+    /// <param name="experimentManager"></param>
+    void ControlMovement(ExperimentManager experimentManager)
     {
         Vector3 TransformVector = Vector3.zero;
 
         //VisualPhysical_: CD比を操作しない条件
-        if (manager.expCondition == Manager.ExpCondition.VisualPhysical_)
+        if (experimentManager.expCondition == ExperimentManager.ExpCondition.VisualPhysical_)
         {
             //コントローラとエージェントの位置・回転を同期
             this.transform.position = controller.transform.position + offsetPos;
@@ -78,7 +78,7 @@ public class Agent : MonoBehaviour
             if (target.isInteract)
             {
                 //CD比を反映した移動ベクトル
-                TransformVector = viveController.GetMovingVector() * manager.CDratio;
+                TransformVector = viveController.GetMovingVector() * experimentManager.CDratio;
 
                 this.transform.position += TransformVector;
             }

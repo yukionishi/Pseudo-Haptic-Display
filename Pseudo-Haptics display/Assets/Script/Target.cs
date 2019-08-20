@@ -6,7 +6,7 @@ using Valve.VR.InteractionSystem;
 
 public class Target : MonoBehaviour
 {
-    Manager manager;
+    ExperimentManager experimentManager;
     RoombaControllerScript roomba;
     VIVEController vive;
     Rigidbody rigidbody;
@@ -27,7 +27,7 @@ public class Target : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        manager = GameObject.Find("Manager").GetComponent<Manager>();
+        experimentManager = GameObject.Find("Manager").GetComponent<ExperimentManager>();
         roomba = GameObject.Find("Manager").GetComponent<RoombaControllerScript>();
         vive = GameObject.FindGameObjectWithTag("Controller").GetComponent<VIVEController>();
         rigidbody = this.GetComponent<Rigidbody>();
@@ -36,13 +36,13 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CDratio = manager.CDratio;
+        CDratio = experimentManager.CDratio;
         inputSpeed = (int)vive.GetVelosityMagnitude(); //VIVEコントローラの速度（mm/s）
         outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
 
         UpdateCollisionState();
 
-        ChangeTargetStatus(manager);
+        ChangeTargetStatus(experimentManager);
 
     }
 
@@ -56,20 +56,20 @@ public class Target : MonoBehaviour
     }
 
     //実験条件に応じてターゲットとルンバのふるまいを変更
-    void ChangeTargetStatus(Manager manager)
+    void ChangeTargetStatus(ExperimentManager experimentManager)
     {
-        switch (manager.expCondition)
+        switch (experimentManager.expCondition)
         {
             //Visual: スクリーン内のオブジェクトはCD比＝１，ディスプレイは動かない
-            case Manager.ExpCondition.Visual:
+            case ExperimentManager.ExpCondition.Visual:
                 break;
 
             //Visual_: スクリーン内のオブジェクトはCD比制御，ディスプレイは動かない
-            case Manager.ExpCondition.Visual_:                 
+            case ExperimentManager.ExpCondition.Visual_:                 
                 break;
                 
             //Visual_Physical: スクリーン内オブジェクトはCD比制御，ディスプレイはCD比＝１
-            case Manager.ExpCondition.Visual_Physical:
+            case ExperimentManager.ExpCondition.Visual_Physical:
                 MoveDisplay_staticCD();
                 break;
 
