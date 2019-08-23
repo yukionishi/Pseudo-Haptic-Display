@@ -117,7 +117,7 @@ public class Target : MonoBehaviour
     }
 
     //エージェントとターゲットの衝突判定->ディスプレイを動かすトリガー
-    void OnCollisionStay(Collision other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Agent")
         {
@@ -125,7 +125,7 @@ public class Target : MonoBehaviour
         }
     }
 
-    void OnCollisionExit(Collision other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Agent")
         {
@@ -134,9 +134,9 @@ public class Target : MonoBehaviour
     }
 
     //targetの位置リセット
-    public void ResetAgentPos()
+    public void ResetTargetPos()
     {
-        this.transform.position = initialPos;
-        this.transform.eulerAngles = Vector3.zero;
+        rigidbody.position = initialPos;
+        rigidbody.velocity = Vector3.zero;
     }
 }

@@ -74,7 +74,7 @@ public class Manager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            target.ResetAgentPos();
+            target.ResetTargetPos();
             agent.ResetAgentPos();
         }
     }

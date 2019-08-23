@@ -8,8 +8,12 @@ public class ExperimentManager : MonoBehaviour
 {
     private GameObject camera1;
     private GameObject camera2;
+    private GameObject displayscreen1;
+    private GameObject displayscreen2;
     private GameObject cameraRig;
+    [SerializeField]
     private GameObject controllerModel_left;
+    [SerializeField]
     private GameObject controllerModel_right;
 
     /// <summary>
@@ -29,6 +33,8 @@ public class ExperimentManager : MonoBehaviour
     [HideInInspector]
     public Target target;
     private Agent agent;
+    Rigidbody rb;
+
     private TrackerPosition trackerPos;
 
     /// <summary>
@@ -49,12 +55,15 @@ public class ExperimentManager : MonoBehaviour
     {
         camera1 = GameObject.Find("Camera1");
         camera2 = GameObject.Find("Target").transform.GetChild(0).gameObject;
+        displayscreen1 = GameObject.Find("DisplayScreen1");
+        displayscreen2 = GameObject.Find("Target").transform.GetChild(1).gameObject;
         cameraRig = GameObject.Find("[CameraRig]");
         controllerModel_left = cameraRig.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject;
         controllerModel_right = cameraRig.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
         target = GameObject.FindGameObjectWithTag("Target").GetComponent<Target>();
         agent = GameObject.FindGameObjectWithTag("Agent").GetComponent<Agent>();
         trackerPos = GameObject.FindGameObjectWithTag("Tracker").GetComponent<TrackerPosition>();
+        rb = target.GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -64,7 +73,7 @@ public class ExperimentManager : MonoBehaviour
 
         ResetTargetPos();
 
-        ChangeUseCamera();
+        ChangeUseCameraAndDisplayScreen();
 
         MesureDistance();
     }
@@ -74,8 +83,8 @@ public class ExperimentManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.R))
         {
-            target.ResetAgentPos();
-            agent.ResetAgentPos();
+            target.ResetTargetPos();
+            agent.ResetAgentPos();            
         }
     }
 
@@ -95,7 +104,7 @@ public class ExperimentManager : MonoBehaviour
     }
 
     //使用するカメラの位置を切替え
-    void ChangeUseCamera()
+    void ChangeUseCameraAndDisplayScreen()
     {
         switch (expCondition)
         {
@@ -103,16 +112,22 @@ public class ExperimentManager : MonoBehaviour
             case ExpCondition.Physical_: 
                 camera1.SetActive(false);
                 camera2.SetActive(true);
+
+                displayscreen1.SetActive(false);
+                displayscreen2.SetActive(true);
                 break;
 
             //VisualOnly,VisualPhysical: カメラ位置は固定，スクリーン上ではターゲットが移動している様子を映す
             default:
                 camera1.SetActive(true);
                 camera2.SetActive(false);
+
+                displayscreen1.SetActive(true);
+                displayscreen2.SetActive(false);
                 break;
         }
     }
-
+    
     //ルンバの移動距離を計測
     void MesureDistance()
     {

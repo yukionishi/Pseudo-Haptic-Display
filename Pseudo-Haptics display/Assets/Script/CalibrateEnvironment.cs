@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CalibrateEnvironment : MonoBehaviour
 {
-    private Transform displayScreen;
+    private Transform displayScreen1;
     private Transform camera1;
     private Transform camera2;
 
@@ -27,14 +27,14 @@ public class CalibrateEnvironment : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        displayScreen = GameObject.Find("DisplayScreen").transform;
+        displayScreen1 = GameObject.Find("DisplayScreen1").transform;
         camera1 = GameObject.Find("Camera1").transform;
         camera2 = GameObject.Find("Target").transform.GetChild(0).gameObject.transform;
 
 
         DisplayPos = Height_displayTop - new Vector3(0.0f, (Height_Display / 2), 0.0f);
         //現実世界での液晶ディスプレイの位置をUnity Scene内のDisplayScreen位置に反映
-        displayScreen.position = DisplayPos;
+        displayScreen1.position = DisplayPos;
 
         GazePos = new Vector3(0, Height_Gaze, DisplayPos.z - Distance_UserToDisplay);
         //現実世界でのユーザの視点位置をCamera1の位置に反映
