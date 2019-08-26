@@ -48,6 +48,9 @@ public class VIVEController : MonoBehaviour
             frameCount = 0;
             time = 0;
         }
+
+        //Debug.Log(VE.GetVelocityEstimate());
+        Debug.Log(GetMovingVector().magnitude * 1000);
     }
 
     //トリガーの入力判定

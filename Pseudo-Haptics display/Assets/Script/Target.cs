@@ -8,7 +8,7 @@ public class Target : MonoBehaviour
 {
     ExperimentManager experimentManager;
     RoombaControllerScript roomba;
-    VIVEController vive;
+    public VIVEController vive;
     Rigidbody rigidbody;
 
     [SerializeField]

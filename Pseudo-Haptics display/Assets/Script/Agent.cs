@@ -61,7 +61,7 @@ public class Agent : MonoBehaviour
             }
 
             //offsetを考慮した位置にカーソルをキャリブレーション
-            this.transform.position = controller.transform.position + offsetPos;
+            rigidbody.position = controller.transform.position + offsetPos;
         }
     }
 

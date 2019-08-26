@@ -12,17 +12,26 @@ public class Test : MonoBehaviour
     public SteamVR_Action_Boolean TrackPad;
     public SteamVR_Action_Vibration HapticAction;
 
-    [SerializeField]
-    private VelocityEstimator VE;
-
+    public VIVEController VC;
+    VelocityEstimator VE;
     RoombaControllerScript roomba;
+
+    public GameObject controller;
+
+    [Header("Controller Speed")]
+    public float inputSpeed;
+    public float outputSpeed;
+    public float CDratio;
 
     // Start is called before the first frame update
     void Start()
     {
         roomba = this.GetComponent<RoombaControllerScript>();
-        
-        VE = GameObject.FindGameObjectWithTag("Controller").GetComponent<VelocityEstimator>();
+
+        controller = GameObject.FindGameObjectWithTag("Controller");
+        VC = controller.GetComponent<VIVEController>();
+        VE = controller.GetComponent<VelocityEstimator>();
+
     }
 
     // Update is called once per frame
@@ -73,7 +82,11 @@ public class Test : MonoBehaviour
             }
             
         }
-        
+
+        Debug.Log(VC.GetMovingVector().magnitude*1000);
+
+        inputSpeed = (int)VC.GetVelosityMagnitude();
+        outputSpeed = (int)(inputSpeed * CDratio);
     }
 
     
