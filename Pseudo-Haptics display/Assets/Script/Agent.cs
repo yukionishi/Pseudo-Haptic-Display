@@ -8,27 +8,21 @@ public class Agent : MonoBehaviour
     GameObject controller;
     VIVEController viveController;
     Target target;
-    Animator animator;
     
     private bool isCalibrate = false;
     private float DistanceCameraToHand = 0;
     [SerializeField]
     private Vector3 offsetPos = Vector3.zero;
-    private Rigidbody rigidbody;
+    private Rigidbody rb;
         
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = this.GetComponent<Rigidbody>();
+        rb = this.GetComponent<Rigidbody>();
         experimentManager = GameObject.Find("Manager").GetComponent<ExperimentManager>();
         controller = GameObject.FindGameObjectWithTag("Controller");
         viveController = controller.GetComponent<VIVEController>();
         target = GameObject.Find("Target").GetComponent<Target>();
-
-        if (GameObject.Find("RightHand").activeInHierarchy == true)
-        {
-            animator = GameObject.Find("RightHand").GetComponent<Animator>();
-        }
         
     }
 
@@ -61,7 +55,7 @@ public class Agent : MonoBehaviour
             }
 
             //offsetを考慮した位置にカーソルをキャリブレーション
-            rigidbody.position = controller.transform.position + offsetPos;
+            rb.position = controller.transform.position + offsetPos;
         }
     }
 
@@ -77,8 +71,8 @@ public class Agent : MonoBehaviour
         if (experimentManager.expCondition == ExperimentManager.ExpCondition.VisualPhysical_)
         {
             //コントローラとエージェントの位置・回転を同期
-            rigidbody.position = controller.transform.position + offsetPos;
-            rigidbody.rotation = controller.transform.rotation;
+            rb.position = controller.transform.position + offsetPos;
+            rb.rotation = controller.transform.rotation;
         }
         //Visual_, Physical_, Visual_Physical, Visual_Physical_: CD比を操作する条件
         else
@@ -89,15 +83,15 @@ public class Agent : MonoBehaviour
                 //CD比を反映した移動ベクトル
                 TransformVector = viveController.GetMovingVector() * experimentManager.CDratio;
 
-                rigidbody.position += TransformVector;
+                rb.position += TransformVector;
             }
             else
             {
-                rigidbody.position += viveController.GetMovingVector();
+                rb.position += viveController.GetMovingVector();
             }
 
             //回転はコントローラに同期
-            rigidbody.rotation = controller.transform.rotation;
+            rb.rotation = controller.transform.rotation;
         }
 
     }
@@ -105,20 +99,8 @@ public class Agent : MonoBehaviour
     //エージェントの位置リセット
     public void ResetAgentPos()
     {
-        rigidbody.position = controller.transform.position + offsetPos;
-        rigidbody.rotation = controller.transform.rotation;
+        rb.position = controller.transform.position + offsetPos;
+        rb.rotation = controller.transform.rotation;
     }
 
-    //Handモデルのジェスチャの変更
-    public void ChangeHandAnimation(bool grip)
-    {
-        if (grip)
-        {
-            animator.SetBool("Point", true);
-        }
-        else
-        {
-            animator.SetBool("Point", false);
-        }
-    }
 }

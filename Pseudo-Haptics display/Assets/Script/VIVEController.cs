@@ -6,23 +6,41 @@ using Valve.VR.InteractionSystem;
 
 public class VIVEController : MonoBehaviour
 {
-    public SteamVR_Input_Sources HandType;
-    public SteamVR_Action_Boolean Trigger;
 
     public VelocityEstimator VE;
+    public SteamVR_Behaviour_Pose SBP;
 
     private int frameCount;
     private float time;
     //フレームレートを更新する時間定数
-    [SerializeField]
-    private float interval;
+    private float interval = 0.5f;
     //フレームレート
-    [SerializeField]
     private int fps = 0;
+
+    public Vector3 currentSpeedVector;
+    public float speed;
+
+    class PosHistory
+    {
+        public float time;
+        public Vector3 position;
+
+        public PosHistory(float _t, Vector3 _p)
+        {
+            time = _t;
+            position = _p;
+        }
+        public PosHistory()
+        {
+            time = 0;
+            position = new Vector3();
+        }
+    }
 
     void Start()
     {
         VE = this.GetComponent<VelocityEstimator>();
+        SBP = this.GetComponent<SteamVR_Behaviour_Pose>();
 
         //再生と同時にコントローラー速度の計測を開始
         if (!VE.estimateOnAwake)
@@ -49,27 +67,40 @@ public class VIVEController : MonoBehaviour
             time = 0;
         }
 
+        UpdateBuffer();
+
+        speed = SBP.GetVelocity().magnitude * 1000;
         //Debug.Log(VE.GetVelocityEstimate());
-        Debug.Log(GetMovingVector().magnitude * 1000);
+        //Debug.Log(GetMovingVector().magnitude * 1000);
     }
-
-    //トリガーの入力判定
+    
     [SerializeField]
-    bool pull = false;
-    public bool TriggerState()
+    const int bufferSize = 10;
+    
+    PosHistory[] posBuffer = new PosHistory[bufferSize];
+
+    void UpdateBuffer()
     {
-
-        if (Trigger.GetStateDown(HandType))
+        for(int i=0; i<bufferSize - 1; i++)
         {
-            pull = true;
+            posBuffer[bufferSize - 1 - i] = posBuffer[bufferSize - 1 - (i + 1)];
         }
-        else if (Trigger.GetStateUp(HandType))
-        {
-            pull = false;
-        }
-
-        return pull;
+        posBuffer[0] = new PosHistory(Time.time, this.gameObject.transform.position);
     }
+
+    /// <summary>
+    /// 速度ベクトルの取得
+    /// </summary>
+    /// <returns>vector/sec</returns>
+    public Vector3 GetSpeedVector()
+    {
+        Vector3 speedVec = new Vector3();
+        speedVec = (posBuffer[0].position - posBuffer[bufferSize - 1].position) / (posBuffer[0].time - posBuffer[bufferSize - 1].time);
+        return speedVec;
+    }
+
+    //----------------------------------------------------------
+    //VelocityEstimatorScriptの関数を利用
 
     //コントローラーの速度（mm/s）取得
     public float GetVelosityMagnitude()
@@ -79,37 +110,24 @@ public class VIVEController : MonoBehaviour
         return VelocityMagnitude;
     }
 
-    [SerializeField]
-    const int bufferSize = 10;
-    
-    float[] velocityBuffer = new float[bufferSize];
-
-    void UpdateBuffer(float currentVelocity)
-    {
-        for(int i=0; i<bufferSize - 1; i++)
-        {
-            velocityBuffer[bufferSize - 1 - i] = velocityBuffer[bufferSize - 1 - (i + 1)];
-        }
-        velocityBuffer[0] = currentVelocity;
-    }
-
-
     /// <summary>
     /// 毎フレームのコントローラの移動ベクトル取得
     /// </summary>
 
-    Vector3[] posBuffer = new Vector3[2];
+    Vector3[] posVecBuffer = new Vector3[2];
 
     public Vector3 GetMovingVector()
     {
         Vector3 MovingVec = Vector3.zero;
                 
-        posBuffer[1] = posBuffer[0]; 
-        posBuffer[0] = this.transform.position;
+        posVecBuffer[1] = posVecBuffer[0]; 
+        posVecBuffer[0] = this.transform.position;
 
-        MovingVec = posBuffer[0] - posBuffer[1]; //現フレームの位置-前フレームの位置
+        MovingVec = posVecBuffer[0] - posVecBuffer[1]; //現フレームの位置-前フレームの位置
 
         return MovingVec;
     } 
+
+
     
 }

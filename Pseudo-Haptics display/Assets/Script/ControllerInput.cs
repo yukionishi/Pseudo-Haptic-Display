@@ -27,16 +27,6 @@ public class ControllerInput : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Trigger.GetStateDown(HandType))
-        {
-            grip = true;
-            agent.ChangeHandAnimation(grip);
-            
-        }
-        else if (Trigger.GetStateUp(HandType))
-        {
-            grip = false;
-            agent.ChangeHandAnimation(grip);
-        }
+
     }
 }

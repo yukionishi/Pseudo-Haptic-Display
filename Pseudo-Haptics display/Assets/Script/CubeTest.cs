@@ -5,7 +5,7 @@ using UnityEngine;
 public class CubeTest : MonoBehaviour
 {
     public bool isInteract = false;
-    private Rigidbody rigidbody;
+    Rigidbody rb;
 
     [SerializeField]
     private Vector3 initialPos;
@@ -13,7 +13,9 @@ public class CubeTest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody = this.GetComponent<Rigidbody>();
+        rb = this.GetComponent<Rigidbody>();
+
+        initialPos = GameObject.Find("Target").transform.position;
     }
 
     // Update is called once per frame
@@ -41,8 +43,8 @@ public class CubeTest : MonoBehaviour
     //targetの位置リセット
     public void ResetAgentPos()
     {
-        rigidbody.position = initialPos;
+        rb.position = initialPos;
 
-        rigidbody.velocity = Vector3.zero;
+        rb.velocity = Vector3.zero;
     }
 }

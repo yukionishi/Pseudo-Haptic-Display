@@ -8,41 +8,50 @@ public class Target : MonoBehaviour
 {
     ExperimentManager experimentManager;
     RoombaControllerScript roomba;
-    public VIVEController vive;
-    Rigidbody rigidbody;
+    VIVEController controller;
+    Rigidbody rb;
 
+    [Header("Controller Infomation")]
     [SerializeField]
     private int inputSpeed = 0; 
     [SerializeField]
     private int outputSpeed = 0;
     [SerializeField]
     private float CDratio = 1;
-
-    [SerializeField]
+    
     private Vector3 initialPos;
 
     //ターゲットとエージェントの衝突判定
     public bool isInteract = false;
+
+    //public float speed;
+    //public float speed2;
 
     // Start is called before the first frame update
     void Start()
     {
         experimentManager = GameObject.Find("Manager").GetComponent<ExperimentManager>();
         roomba = GameObject.Find("Manager").GetComponent<RoombaControllerScript>();
-        vive = GameObject.FindGameObjectWithTag("Controller").GetComponent<VIVEController>();
-        rigidbody = this.GetComponent<Rigidbody>();
+        controller = GameObject.FindGameObjectWithTag("Controller").GetComponent<VIVEController>();
+        rb = this.GetComponent<Rigidbody>();
+
+        initialPos = GameObject.Find("Target").transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
         CDratio = experimentManager.CDratio;
-        inputSpeed = (int)vive.GetVelosityMagnitude(); //VIVEコントローラの速度（mm/s）
+        inputSpeed = (int)(controller.SBP.GetVelocity().magnitude * 1000); //VIVEコントローラの速度（mm）
         outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
 
         UpdateCollisionState();
 
         ChangeTargetStatus(experimentManager);
+
+        //テスト用
+        //speed = (int)(controller.GetSpeedVector().magnitude * 1000);
+        //speed2 = (int)(controller.SBP.GetVelocity().magnitude * 1000);
 
     }
 
@@ -136,7 +145,7 @@ public class Target : MonoBehaviour
     //targetの位置リセット
     public void ResetTargetPos()
     {
-        rigidbody.position = initialPos;
-        rigidbody.velocity = Vector3.zero;
+        rb.position = initialPos;
+        rb.velocity = Vector3.zero;
     }
 }
