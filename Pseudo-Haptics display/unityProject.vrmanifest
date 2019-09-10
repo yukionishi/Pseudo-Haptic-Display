@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.pseudohapticsdisplay.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\Yuki Onishi\\GitHub\\Pseudo-Haptic-Display\\Pseudo-Haptics display\\actions.json",
+      "action_manifest_path": "C:\\Users\\share\\Desktop\\Pseudo-Haptic Display\\Pseudo-Haptic-Display\\Pseudo-Haptics display\\actions.json",
       "strings": {
         "en_us": {
           "name": "Pseudo-Haptics display [Testing]"

@@ -15,6 +15,7 @@ public class Test : MonoBehaviour
     public VIVEController VC;
     VelocityEstimator VE;
     RoombaControllerScript roomba;
+    ExperimentManager manager;
 
     public GameObject controller;
 
@@ -27,6 +28,7 @@ public class Test : MonoBehaviour
     void Start()
     {
         roomba = this.GetComponent<RoombaControllerScript>();
+        manager = GameObject.Find("Manager").GetComponent<ExperimentManager>();
 
         controller = GameObject.FindGameObjectWithTag("Controller");
         VC = controller.GetComponent<VIVEController>();
@@ -83,12 +85,24 @@ public class Test : MonoBehaviour
             
         }
 
+        /* 
         Debug.Log(VC.GetMovingVector().magnitude*1000);
 
         inputSpeed = (int)VC.GetVelosityMagnitude();
         outputSpeed = (int)(inputSpeed * CDratio);
+        */
     }
 
-    
+    public Vector3[] controllerPos = new Vector3[2]; 
+    public float CalculateDistance()
+    {
+        float controllerDistance = 0;
+        float roombaDistance = 0;
+
+        controllerDistance = controllerPos[1].z - controllerPos[0].z;
+        roombaDistance = controllerDistance * manager.CDratio * 100;
+
+        return roombaDistance;
+    }
 
 }
