@@ -12,13 +12,15 @@ public class Target : MonoBehaviour
     Rigidbody rb;
 
     [Header("Controller Infomation")]
-    [SerializeField]
-    private int inputSpeed = 0; 
+    public int inputSpeed = 0; 
     [SerializeField]
     private int outputSpeed = 0;
     [SerializeField]
     private float CDratio = 1;
-    
+    [SerializeField]
+    private int offset = 25;
+
+    [Header("Target Infomation")]
     private Vector3 initialPos;
 
     //ターゲットとエージェントの衝突判定
@@ -42,7 +44,7 @@ public class Target : MonoBehaviour
     void Update()
     {
         CDratio = experimentManager.CDratio;
-        inputSpeed = (int)(controller.SBP.GetVelocity().magnitude * 1000); //VIVEコントローラの速度（mm）
+        //inputSpeedはVIVEControllerスクリプト内Update関数で更新
         outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
 
         UpdateCollisionState();
@@ -53,6 +55,14 @@ public class Target : MonoBehaviour
         //speed = (int)(controller.GetSpeedVector().magnitude * 1000);
         //speed2 = (int)(controller.SBP.GetVelocity().magnitude * 1000);
 
+    }
+
+    //inpuSpeed,OutputSpeedの更新
+    public void UpdateControllerSpeed()
+    {
+        CDratio = experimentManager.CDratio;
+        inputSpeed = (int)(controller.GetSpeedVector().magnitude * 1000) - offset; //VIVEコントローラの速度（mm）
+        outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
     }
 
     //接触状態の遷移を記録
@@ -126,11 +136,17 @@ public class Target : MonoBehaviour
     }
 
     //エージェントとターゲットの衝突判定->ディスプレイを動かすトリガー
+    //デバック用
+    private Vector3 startPos = Vector3.zero;
+    private Vector3 finPos = Vector3.zero;
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Agent")
         {
             isInteract = true;
+
+            //デバック用
+            startPos = controller.transform.position;
         }
     }
 
@@ -139,6 +155,10 @@ public class Target : MonoBehaviour
         if (other.gameObject.tag == "Agent")
         {
             isInteract = false;
+
+            //デバック用
+            finPos = controller.transform.position;
+            Debug.Log((finPos - startPos).magnitude * 100); //ルンバが動いた距離（cm）
         }
     }
 
@@ -148,4 +168,5 @@ public class Target : MonoBehaviour
         rb.position = initialPos;
         rb.velocity = Vector3.zero;
     }
+    
 }

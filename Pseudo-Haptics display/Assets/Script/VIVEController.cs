@@ -9,16 +9,18 @@ public class VIVEController : MonoBehaviour
 
     public VelocityEstimator VE;
     public SteamVR_Behaviour_Pose SBP;
+    public Target target;
 
     private int frameCount;
     private float time;
+    private float prevTime = 0;
     //フレームレートを更新する時間定数
     private float interval = 0.5f;
     //フレームレート
     private int fps = 0;
 
     public Vector3 currentSpeedVector;
-    public float speed;
+    private float speed;
 
     class PosHistory
     {
@@ -41,6 +43,7 @@ public class VIVEController : MonoBehaviour
     {
         VE = this.GetComponent<VelocityEstimator>();
         SBP = this.GetComponent<SteamVR_Behaviour_Pose>();
+        target = GameObject.Find("Target").GetComponent<Target>();
 
         //再生と同時にコントローラー速度の計測を開始
         if (!VE.estimateOnAwake)
@@ -55,7 +58,8 @@ public class VIVEController : MonoBehaviour
     {
         //フレームレートの計算
         frameCount++;
-        time += Time.deltaTime;
+        time = Time.time - prevTime;
+
         if (time > interval)
         {
             //整数値でFPS算出
@@ -64,19 +68,22 @@ public class VIVEController : MonoBehaviour
             VE.velocityAverageFrames = fps;
 
             frameCount = 0;
-            time = 0;
+            prevTime = Time.time;
         }
 
         UpdateBuffer();
 
-        speed = SBP.GetVelocity().magnitude * 1000;
+        target.UpdateControllerSpeed();
+
+        //speed = SBP.GetVelocity().magnitude * 1000;
         //Debug.Log(VE.GetVelocityEstimate());
         //Debug.Log(GetMovingVector().magnitude * 1000);
     }
     
     [SerializeField]
-    const int bufferSize = 10;
-    
+    const int bufferSize = 44; //fpsの値を拝借
+    //const int bufferSize = 10;
+
     PosHistory[] posBuffer = new PosHistory[bufferSize];
 
     void UpdateBuffer()

@@ -14,6 +14,7 @@ public class Agent : MonoBehaviour
     [SerializeField]
     private Vector3 offsetPos = Vector3.zero;
     private Rigidbody rb;
+    private Animator anim;
         
     // Start is called before the first frame update
     void Start()
@@ -23,7 +24,7 @@ public class Agent : MonoBehaviour
         controller = GameObject.FindGameObjectWithTag("Controller");
         viveController = controller.GetComponent<VIVEController>();
         target = GameObject.Find("Target").GetComponent<Target>();
-        
+        anim = this.GetComponent<Animator>();
     }
 
     // Update is called once per frame
