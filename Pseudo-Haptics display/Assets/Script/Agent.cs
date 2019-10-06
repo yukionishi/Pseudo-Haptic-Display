@@ -8,6 +8,8 @@ public class Agent : MonoBehaviour
     GameObject controller;
     VIVEController viveController;
     Target target;
+
+    Test test;
     
     private bool isCalibrate = false;
     private float DistanceCameraToHand = 0;
@@ -24,7 +26,13 @@ public class Agent : MonoBehaviour
         controller = GameObject.FindGameObjectWithTag("Controller");
         viveController = controller.GetComponent<VIVEController>();
         target = GameObject.Find("Target").GetComponent<Target>();
+<<<<<<< HEAD
         anim = this.GetComponent<Animator>();
+=======
+
+        test = GameObject.Find("Manager").GetComponent<Test>();
+        
+>>>>>>> a9b7455861952c817ca0a96ccd3eb6c531c3989c
     }
 
     // Update is called once per frame
@@ -102,6 +110,28 @@ public class Agent : MonoBehaviour
     {
         rb.position = controller.transform.position + offsetPos;
         rb.rotation = controller.transform.rotation;
+    }
+
+
+    //デバック用
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Target")
+        {
+            test.controllerPos[0]=controller.transform.position;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Target")
+        {
+            test.controllerPos[1]=controller.transform.position;
+
+            test.CalculateDistance();
+
+            Debug.Log("Distance of Roomba Movement: " + test.CalculateDistance());
+        }
     }
 
 }
