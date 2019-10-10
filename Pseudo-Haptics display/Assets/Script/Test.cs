@@ -24,6 +24,9 @@ public class Test : MonoBehaviour
     public float outputSpeed;
     public float CDratio;
 
+    private Vector3 _previousVector;
+    private Vector3 _currentVector = Vector3.zero;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +42,10 @@ public class Test : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        _previousVector = _currentVector;
+        _currentVector = this.transform.position;
+        Debug.Log("AAA; " + (_currentVector - _previousVector));
+
         if (Trigger.GetStateDown(HandType))
         {
             Debug.Log("Pull Trigger Down");

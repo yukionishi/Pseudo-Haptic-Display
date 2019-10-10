@@ -50,6 +50,12 @@ public class ExperimentManager : MonoBehaviour
     /// </summary>
     public float RoombaMoveDistance = 0;
 
+    private void Awake()
+    {
+        //Application.targetFrameRate = 60;
+        Time.fixedDeltaTime = 0.0167f;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -74,8 +80,6 @@ public class ExperimentManager : MonoBehaviour
         ResetTargetPos();
 
         ChangeUseCameraAndDisplayScreen();
-
-        MesureDistance();
     }
 
     //ターゲットとエージェントの位置をリセット
@@ -128,10 +132,13 @@ public class ExperimentManager : MonoBehaviour
         }
     }
     
+
+    //デバック用------------------------------------------------------------
+
     //ルンバの移動距離を計測
     void MesureDistance()
     {
-        RoombaMoveDistance = trackerPos.CalculateDistance();
+        
     }
 
 

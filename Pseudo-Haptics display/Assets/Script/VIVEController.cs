@@ -19,8 +19,8 @@ public class VIVEController : MonoBehaviour
     //フレームレート
     private int fps = 0;
 
-    public Vector3 currentSpeedVector;
-    private float speed;
+    private Vector3 _moveVector;
+    private Vector3 _currentVector = Vector3.zero;
 
     class PosHistory
     {
@@ -54,8 +54,17 @@ public class VIVEController : MonoBehaviour
         frameCount = 0;
     }
 
+    private void FixedUpdate()
+    {
+        //毎フレームのコントローラの位置取得
+        _moveVector = this.transform.position - _currentVector;
+        _currentVector = this.transform.position;
+    }
+
     void Update()
     {
+
+
         //フレームレートの計算
         frameCount++;
         time = Time.time - prevTime;
@@ -74,12 +83,10 @@ public class VIVEController : MonoBehaviour
         UpdateBuffer();
 
         target.UpdateControllerSpeed();
-
-        //speed = SBP.GetVelocity().magnitude * 1000;
-        //Debug.Log(VE.GetVelocityEstimate());
-        //Debug.Log(GetMovingVector().magnitude * 1000);
+                
     }
-    
+
+
     [SerializeField]
     const int bufferSize = 44; //fpsの値を拝借
     //const int bufferSize = 10;
@@ -117,22 +124,15 @@ public class VIVEController : MonoBehaviour
         return VelocityMagnitude;
     }
 
+    //----------------------------------------------------------
+
     /// <summary>
     /// 毎フレームのコントローラの移動ベクトル取得
     /// </summary>
 
-    Vector3[] posVecBuffer = new Vector3[2];
-
     public Vector3 GetMovingVector()
     {
-        Vector3 MovingVec = Vector3.zero;
-                
-        posVecBuffer[1] = posVecBuffer[0]; 
-        posVecBuffer[0] = this.transform.position;
-
-        MovingVec = posVecBuffer[0] - posVecBuffer[1]; //現フレームの位置-前フレームの位置
-
-        return MovingVec;
+        return _moveVector;
     } 
 
 
