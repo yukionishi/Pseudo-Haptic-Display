@@ -19,8 +19,8 @@ public class VIVEController : MonoBehaviour
     //フレームレート
     private int fps = 0;
 
-    public Vector3 currentSpeedVector;
-    private float speed;
+    private Vector3 _moveVector;
+    private Vector3 _currentVector = Vector3.zero;
 
     class PosHistory
     {
@@ -52,6 +52,12 @@ public class VIVEController : MonoBehaviour
         }
 
         frameCount = 0;
+    }
+
+    private void FixedUpdate()
+    {
+        _moveVector = this.transform.position - _currentVector;
+        _currentVector = this.transform.position;
     }
 
     void Update()
@@ -117,24 +123,16 @@ public class VIVEController : MonoBehaviour
         return VelocityMagnitude;
     }
 
+    //----------------------------------------------------------
+
     /// <summary>
     /// 毎フレームのコントローラの移動ベクトル取得
     /// </summary>
 
-    Vector3[] posVecBuffer = new Vector3[2];
-
     public Vector3 GetMovingVector()
     {
-        Vector3 MovingVec = Vector3.zero;
-                
-        posVecBuffer[1] = posVecBuffer[0]; 
-        posVecBuffer[0] = this.transform.position;
-
-        MovingVec = posVecBuffer[0] - posVecBuffer[1]; //現フレームの位置-前フレームの位置
-
-        return MovingVec;
-    } 
+        return _moveVector;
+    }
 
 
-    
 }

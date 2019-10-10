@@ -61,7 +61,17 @@ public class Agent : MonoBehaviour
 
             //offsetを考慮した位置にカーソルをキャリブレーション
             rb.position = controller.transform.position + offsetPos;
+
         }
+        else
+        {
+            if (!target.isInteract)
+            {
+                //offsetを考慮した位置にカーソルをキャリブレーション
+                rb.position = controller.transform.position + offsetPos;
+            }
+        }
+        
     }
 
     /// <summary>
@@ -93,6 +103,9 @@ public class Agent : MonoBehaviour
             else
             {
                 rb.position += viveController.GetMovingVector();
+
+                ////offsetを考慮した位置にカーソルをキャリブレーション
+                //rb.position = controller.transform.position + offsetPos;
             }
 
             //回転はコントローラに同期
