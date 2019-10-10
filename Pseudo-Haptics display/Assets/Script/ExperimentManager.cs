@@ -62,7 +62,6 @@ public class ExperimentManager : MonoBehaviour
         controllerModel_right = cameraRig.transform.GetChild(1).gameObject.transform.GetChild(0).gameObject;
         target = GameObject.FindGameObjectWithTag("Target").GetComponent<Target>();
         agent = GameObject.FindGameObjectWithTag("Agent").GetComponent<Agent>();
-        trackerPos = GameObject.FindGameObjectWithTag("Tracker").GetComponent<TrackerPosition>();
         rb = target.GetComponent<Rigidbody>();
     }
 
@@ -74,8 +73,6 @@ public class ExperimentManager : MonoBehaviour
         ResetTargetPos();
 
         ChangeUseCameraAndDisplayScreen();
-
-        MesureDistance();
     }
 
     //ターゲットとエージェントの位置をリセット
@@ -126,12 +123,6 @@ public class ExperimentManager : MonoBehaviour
                 displayscreen2.SetActive(false);
                 break;
         }
-    }
-    
-    //ルンバの移動距離を計測
-    void MesureDistance()
-    {
-        RoombaMoveDistance = trackerPos.CalculateDistance();
     }
 
 
