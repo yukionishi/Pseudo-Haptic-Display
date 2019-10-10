@@ -26,13 +26,9 @@ public class Agent : MonoBehaviour
         controller = GameObject.FindGameObjectWithTag("Controller");
         viveController = controller.GetComponent<VIVEController>();
         target = GameObject.Find("Target").GetComponent<Target>();
-<<<<<<< HEAD
         anim = this.GetComponent<Animator>();
-=======
 
         test = GameObject.Find("Manager").GetComponent<Test>();
-        
->>>>>>> a9b7455861952c817ca0a96ccd3eb6c531c3989c
     }
 
     // Update is called once per frame
