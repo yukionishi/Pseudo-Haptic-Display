@@ -50,7 +50,6 @@ public class Target : MonoBehaviour
         UpdateCollisionState();
 
         ChangeTargetStatus(experimentManager);
-        JudgeMovingDirection();
 
         //テスト用
         //speed = (int)(controller.GetSpeedVector().magnitude * 1000);
@@ -63,32 +62,7 @@ public class Target : MonoBehaviour
     {
         CDratio = experimentManager.CDratio;
         inputSpeed = (int)(controller.GetSpeedVector().magnitude * 1000) - offset; //VIVEコントローラの速度（mm）
-
-        if(experimentManager.expCondition == ExperimentManager.ExpCondition.Visual_Physical_)
-        {
-            outputSpeed = (int)(inputSpeed * (CDratio / 2)); //CD比を反映後のエージェントの速度
-        }
-        else
-        {
-            outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
-        }
-        
-    }
-
-    //オブジェクトとのインタラクション判定
-    private bool push = false;
-    public bool JudgeMovingDirection()
-    {
-        if(controller.GetMovingVector().z > 0) //z軸正方向にコントローラが移動
-        {
-            push = true; //オブジェクトを押している
-        }
-        else //z軸負方向にコントローラが移動
-        {
-            push = false; //オブジェクトを引いている　
-        }
-
-        return push;
+        outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
     }
 
     //接触状態の遷移を記録
@@ -135,14 +109,8 @@ public class Target : MonoBehaviour
         {
             if (currentState == true) //両者が接触状態のとき
             {
-                if (push)
-                {
-                    roomba.MoveBack(outputSpeed);
-                }
-                else
-                {
-                    //roomba.MoveBack(-outputSpeed);
-                }               
+                roomba.MoveForward(outputSpeed);
+                
             }
             else if (currentState == false && previousState == true) //前フレームでは接触していたが現フレームで離れたとき
             {
@@ -157,14 +125,7 @@ public class Target : MonoBehaviour
         {
             if (currentState == true) //両者が接触状態のとき
             {
-                if (push)
-                {
-                    roomba.MoveBack(inputSpeed);
-                }
-                else
-                {
-                    //roomba.MoveBack(-inputSpeed);
-                }
+                roomba.MoveForward(inputSpeed);
 
             }
             else if (currentState == false && previousState == true) //前フレームでは接触していたが現フレームで離れたとき
@@ -197,7 +158,7 @@ public class Target : MonoBehaviour
 
             //デバック用
             finPos = controller.transform.position;
-            Debug.Log("Roomba Move Distance:" + (finPos - startPos).magnitude * 100); //ルンバが動いた距離（cm）
+            Debug.Log((finPos - startPos).magnitude * 100); //ルンバが動いた距離（cm）
         }
     }
 
