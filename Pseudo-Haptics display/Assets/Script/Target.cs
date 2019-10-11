@@ -15,8 +15,8 @@ public class Target : MonoBehaviour
     public int inputSpeed = 0; 
     [SerializeField]
     private int outputSpeed = 0;
-    [SerializeField]
-    private float CDratio = 1;
+    //[SerializeField]
+    public float CDratio = 1;
     [SerializeField]
     private int offset = 25;
 

@@ -131,7 +131,9 @@ public class VIVEController : MonoBehaviour
 
     public Vector3 GetMovingVector()
     {
-        return _moveVector;
+        //return _moveVector;
+
+        return posBuffer[0].position - posBuffer[bufferSize - 1].position;
     }
 
 
