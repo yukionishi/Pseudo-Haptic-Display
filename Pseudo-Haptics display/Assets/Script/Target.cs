@@ -51,10 +51,6 @@ public class Target : MonoBehaviour
 
         ChangeTargetStatus(experimentManager);
 
-        //テスト用
-        //speed = (int)(controller.GetSpeedVector().magnitude * 1000);
-        //speed2 = (int)(controller.SBP.GetVelocity().magnitude * 1000);
-
     }
 
     //inpuSpeed,OutputSpeedの更新
@@ -133,6 +129,15 @@ public class Target : MonoBehaviour
         }
     }
 
+    //targetの位置リセット
+    public void ResetTargetPos()
+    {
+        rb.position = initialPos;
+        rb.velocity = Vector3.zero;
+    }
+
+    //-------------------------------------------------------------------------------------------
+
     //エージェントとターゲットの衝突判定->ディスプレイを動かすトリガー
     //デバック用
     private Vector3 startPos = Vector3.zero;
@@ -160,11 +165,6 @@ public class Target : MonoBehaviour
         }
     }
 
-    //targetの位置リセット
-    public void ResetTargetPos()
-    {
-        rb.position = initialPos;
-        rb.velocity = Vector3.zero;
-    }
+    
     
 }

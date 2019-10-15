@@ -10,11 +10,17 @@ public class ButtonsForOperation : MonoBehaviour
     public ToggleGroup displayConditionToggleGroup;
     public ToggleGroup CDratioToggleGroup;
     public Toggle groundTruth;
+
+    Target target;
+    Agent agent;
  
     // Start is called before the first frame update
     void Start()
     {
         experimentManager = GameObject.Find("Manager").GetComponent<ExperimentManager>();
+
+        target = GameObject.Find("Target").GetComponent<Target>();
+        agent = GameObject.FindGameObjectWithTag("Agent").GetComponent<Agent>();
     }
 
     // Update is called once per frame
@@ -52,5 +58,9 @@ public class ButtonsForOperation : MonoBehaviour
             else if (selectedCDRatio == "1.4") experimentManager.CDratio = 1.4f;
             else experimentManager.CDratio = 1.6f;
         }
+
+        //ターゲットとエージェントの位置初期化
+        target.ResetTargetPos();
+        agent.ResetAgentPos();　
     }
 }

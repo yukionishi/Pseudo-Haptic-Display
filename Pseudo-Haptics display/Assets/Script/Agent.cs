@@ -11,25 +11,17 @@ public class Agent : MonoBehaviour
 
     Test test;
     
-    private bool isCalibrate = false;
-    private float DistanceCameraToHand = 0;
     [SerializeField]
     private Vector3 offsetPos = Vector3.zero;
-    private Rigidbody rb;
-    private Animator anim;
-
-    private Vector3 _previousVector = Vector3.zero;
     private Vector3 _transformVector = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
     {
-        rb = this.GetComponent<Rigidbody>();
         experimentManager = GameObject.Find("Manager").GetComponent<ExperimentManager>();
         controller = GameObject.FindGameObjectWithTag("Controller");
         viveController = controller.GetComponent<VIVEController>();
         target = GameObject.Find("Target").GetComponent<Target>();
-        anim = this.GetComponent<Animator>();
 
         test = GameObject.Find("Manager").GetComponent<Test>();
 

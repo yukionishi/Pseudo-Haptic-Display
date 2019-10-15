@@ -76,6 +76,7 @@ public class VIVEController : MonoBehaviour
 
         target.UpdateControllerSpeed();
 
+        //コントローラの移動ベクトルを更新．Fixed Updateで更新すると更新が間に合わず角つくので注意
         _moveVector = this.transform.position - _currentVector;
         _currentVector = this.transform.position;
     }
