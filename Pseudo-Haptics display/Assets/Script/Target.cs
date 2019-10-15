@@ -24,10 +24,10 @@ public class Target : MonoBehaviour
     private Vector3 initialPos;
 
     //ターゲットとエージェントの衝突判定
-    public bool isInteract = false;
-
-    //public float speed;
-    //public float speed2;
+    public bool _isInteract = false;
+    //接触状態の遷移を記録
+    private bool previousState = false;
+    private bool currentState = false;
 
     // Start is called before the first frame update
     void Start()
@@ -65,13 +65,11 @@ public class Target : MonoBehaviour
         outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
     }
 
-    //接触状態の遷移を記録
-    private bool previousState = false;
-    private bool currentState = false;
+    
     void UpdateCollisionState()
     {
         previousState = currentState;
-        currentState = isInteract;        
+        currentState = _isInteract;        
     }
 
     //実験条件に応じてターゲットとルンバのふるまいを変更
@@ -143,7 +141,7 @@ public class Target : MonoBehaviour
     {
         if (other.gameObject.tag == "Agent")
         {
-            isInteract = true;
+            _isInteract = true;
 
             //デバック用
             startPos = controller.transform.position;
@@ -154,7 +152,7 @@ public class Target : MonoBehaviour
     {
         if (other.gameObject.tag == "Agent")
         {
-            isInteract = false;
+            _isInteract = false;
 
             //デバック用
             finPos = controller.transform.position;

@@ -19,7 +19,7 @@ public class Agent : MonoBehaviour
     private Animator anim;
 
     private Vector3 _previousVector = Vector3.zero;
-    private Vector3 TransformVector = Vector3.zero;
+    private Vector3 _transformVector = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
@@ -33,57 +33,44 @@ public class Agent : MonoBehaviour
 
         test = GameObject.Find("Manager").GetComponent<Test>();
 
-        _previousVector = controller.transform.position + offsetPos;
     }
 
     // Update is called once per frame
     void Update()
-    {       
-        CaliblateHandPos();
-
-        TransformVector = viveController.GetMovingVector();
-
-        Debug.Log(viveController.GetMovingVector());
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            CaliblateHandPos();
+        }
     }
 
     private void LateUpdate()
-    {
+    {       
+        _transformVector = viveController.GetMovingVector(); //コントローラの移動ベクトル取得
+
         ControlMovement(experimentManager);
     }
 
     //エージェントの位置キャリブレーション（オフセットの計算）
     void CaliblateHandPos()
     {
-        isCalibrate = experimentManager.isCalibrate;
-        DistanceCameraToHand = experimentManager.DistanceCameraToHand;
 
         //キャリブレーションモードの判定
-        if (isCalibrate)
+        if (experimentManager.isCalibrate)
         {
             //GameViewでマウスがクリックした座標を初期位置
-            if (Input.GetMouseButtonDown(0))
-            {
-                Vector3 HandPos = Input.mousePosition;
-                HandPos.z = DistanceCameraToHand;
+            Vector3 HandPos = Input.mousePosition;
+            HandPos.z = experimentManager.DistanceCameraToHand;
 
-                Vector3 _HandPos = Camera.main.ScreenToWorldPoint(HandPos);
+            Vector3 _HandPos = Camera.main.ScreenToWorldPoint(HandPos);
 
-                //オフセットを算出
-                offsetPos = _HandPos - controller.transform.position;
-            }
+            //オフセットの算出
+            offsetPos = _HandPos - controller.transform.position;
 
+            //オフセット分を加味したカーソル位置
+            this.transform.position = controller.transform.position + offsetPos;         
         }
-        //else
-        //{
-        //    if (!target.isInteract)
-        //    {
-        //        //offsetを考慮した位置にカーソルをキャリブレーション
-        //        rb.position = controller.transform.position + offsetPos;
-        //    }
-        //}
-
-        ////offsetを考慮した位置にカーソルをキャリブレーション
-        //rb.position = controller.transform.position + offsetPos;   
+       
 
     }
 
@@ -93,32 +80,29 @@ public class Agent : MonoBehaviour
     /// <param name="experimentManager"></param>
     void ControlMovement(ExperimentManager experimentManager)
     {
-        var TransformVector = Vector3.zero;
 
-        //VisualPhysical_: CD比を操作しない条件
+        //VisualPhysical_: カーソル側のCD比を操作しない条件
         if (experimentManager.expCondition == ExperimentManager.ExpCondition.VisualPhysical_)
         {
             //コントローラとエージェントの位置・回転を同期
-            rb.position = controller.transform.position + offsetPos;
-            rb.rotation = controller.transform.rotation;
+            this.transform.position += _transformVector;
+            this.transform.rotation = controller.transform.rotation;
         }
         //Visual_, Physical_, Visual_Physical, Visual_Physical_: CD比を操作する条件
         else
         {
             //ターゲット接触時にエージェント側の移動量を操作
-            if (target.isInteract)
+            if (target._isInteract)
             {
-                rb.position = _previousVector + TransformVector * experimentManager.CDratio;
-                _previousVector = _previousVector + TransformVector * experimentManager.CDratio;
+                this.transform.position +=_transformVector * experimentManager.CDratio;
             }
             else
             {
-                rb.position = controller.transform.position + offsetPos;
-                _previousVector = controller.transform.position + offsetPos;
+                this.transform.position += _transformVector;
             }
 
             //回転はコントローラに同期
-            rb.rotation = controller.transform.rotation;
+            this.transform.rotation = controller.transform.rotation;
         }
 
     }
@@ -126,8 +110,7 @@ public class Agent : MonoBehaviour
     //エージェントの位置リセット
     public void ResetAgentPos()
     {
-        rb.position = controller.transform.position + offsetPos;
-        rb.rotation = controller.transform.rotation;
+        transform.position = controller.transform.position + offsetPos;
     }
 
 

@@ -89,7 +89,7 @@ public class HandAgent : MonoBehaviour
         else
         {
             //ターゲット接触時にエージェント側の移動量を操作
-            if (target.isInteract)
+            if (target._isInteract)
             {
                 //CD比を反映した移動ベクトル
                 TransformVector = viveController.GetMovingVector() * experimentManager.CDratio;

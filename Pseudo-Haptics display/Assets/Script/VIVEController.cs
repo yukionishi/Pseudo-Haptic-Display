@@ -54,11 +54,6 @@ public class VIVEController : MonoBehaviour
         frameCount = 0;
     }
 
-    private void FixedUpdate()
-    {
-        _moveVector = this.transform.position - _currentVector;
-        _currentVector = this.transform.position;
-    }
 
     void Update()
     {
@@ -81,14 +76,12 @@ public class VIVEController : MonoBehaviour
 
         target.UpdateControllerSpeed();
 
-        //speed = SBP.GetVelocity().magnitude * 1000;
-        //Debug.Log(VE.GetVelocityEstimate());
-        //Debug.Log(GetMovingVector().magnitude * 1000);
+        _moveVector = this.transform.position - _currentVector;
+        _currentVector = this.transform.position;
     }
     
     [SerializeField]
     const int bufferSize = 44; //fpsの値を拝借
-    //const int bufferSize = 10;
 
     PosHistory[] posBuffer = new PosHistory[bufferSize];
 
@@ -131,9 +124,7 @@ public class VIVEController : MonoBehaviour
 
     public Vector3 GetMovingVector()
     {
-        //return _moveVector;
-
-        return posBuffer[0].position - posBuffer[bufferSize - 1].position;
+        return _moveVector;
     }
 
 
