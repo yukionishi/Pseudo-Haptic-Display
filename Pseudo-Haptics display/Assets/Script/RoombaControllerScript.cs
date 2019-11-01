@@ -23,9 +23,6 @@ public class RoombaControllerScript : MonoBehaviour
     //private int BOARDRATE = 19200;
     private int BOARDRATE = 57600;
 
-    //Fullモードへの切り替え（Safe Controlが作動しない）
-    private bool Mode_Full = false;
-
     void Awake()
     {
         Instance = this;
@@ -57,14 +54,7 @@ public class RoombaControllerScript : MonoBehaviour
             {
                 Open();
                 sendPacket(WakeUp(), 0);
-                if (Mode_Full)
-                {
-                    sendPacket(Full(), 0);
-                }
-                else
-                {
-                    sendPacket(Safe(), 0);
-                }
+                sendPacket(Safe(), 0);
                 sendPacket(BoardRate(), 0);
                 open = true;
 

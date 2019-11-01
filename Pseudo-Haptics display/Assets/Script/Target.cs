@@ -12,13 +12,13 @@ public class Target : MonoBehaviour
     Rigidbody rb;
 
     [Header("Controller Infomation")]
-    public int inputSpeed = 0; 
+    public int _inputSpeed = 0; 
     [SerializeField]
-    private int outputSpeed = 0;
+    private int _outputSpeed = 0;
     //[SerializeField]
-    public float CDratio = 1;
+    public float _CDratio = 1;
     [SerializeField]
-    private int offset = 25;
+    private int _offset = 25;
 
     [Header("Target Infomation")]
     private Vector3 initialPos;
@@ -26,8 +26,8 @@ public class Target : MonoBehaviour
     //ターゲットとエージェントの衝突判定
     public bool _isInteract = false;
     //接触状態の遷移を記録
-    private bool previousState = false;
-    private bool currentState = false;
+    private bool _previousState = false;
+    private bool _currentState = false;
 
     // Start is called before the first frame update
     void Start()
@@ -43,10 +43,6 @@ public class Target : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CDratio = experimentManager.CDratio;
-        //inputSpeedはVIVEControllerスクリプト内Update関数で更新
-        outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
-
         UpdateCollisionState();
 
         ChangeTargetStatus(experimentManager);
@@ -56,16 +52,16 @@ public class Target : MonoBehaviour
     //inpuSpeed,OutputSpeedの更新
     public void UpdateControllerSpeed()
     {
-        CDratio = experimentManager.CDratio;
-        inputSpeed = (int)(controller.GetSpeedVector().magnitude * 1000) - offset; //VIVEコントローラの速度（mm）
-        outputSpeed = (int)(inputSpeed * CDratio); //CD比を反映後のエージェントの速度
+        _CDratio = experimentManager.CDratio;
+        _inputSpeed = (int)(controller.GetSpeedVector().magnitude * 1000) - _offset; //VIVEコントローラの速度（mm）
+        _outputSpeed = (int)(_inputSpeed * _CDratio); //CD比を反映後のエージェントの速度
     }
 
     
     void UpdateCollisionState()
     {
-        previousState = currentState;
-        currentState = _isInteract;        
+        _previousState = _currentState;
+        _currentState = _isInteract;        
     }
 
     //実験条件に応じてターゲットとルンバのふるまいを変更
@@ -86,27 +82,31 @@ public class Target : MonoBehaviour
                 MoveDisplay_staticCD();
                 break;
 
+            //Visual_Physical_: オブジェクト，ディスプレイ共にCD比制御
+            case ExperimentManager.ExpCondition.Visual_Physical_:
+                MoveDisplay_variableCD((int)(_inputSpeed * (_CDratio / 2)));
+                break;
+
             //VisualPhysical_: スクリーン内のオブジェクトはCD比＝１，ディスプレイはCD比制御
-            //Visual_Physical_: スクリーン内のオブジェクトとディスプレイ共にCD比制御
             //Physical_: オブジェクトはスクリーン内で固定＋ディスプレイはCD比制御
             default:
-                MoveDisplay_variableCD();
+                MoveDisplay_variableCD(_outputSpeed);
 
                 break;
         }
     }
 
     //ディスプレイ（ルンバ）の動作制御（CD比制御）
-    void MoveDisplay_variableCD()
+    void MoveDisplay_variableCD(int roombaSpeed)
     {
         if (roomba.open)
         {
-            if (currentState == true) //両者が接触状態のとき
+            if (_currentState == true) //両者が接触状態のとき
             {
-                roomba.MoveForward(outputSpeed);
+                roomba.MoveBack(roombaSpeed);
                 
             }
-            else if (currentState == false && previousState == true) //前フレームでは接触していたが現フレームで離れたとき
+            else if (_currentState == false && _previousState == true) //前フレームでは接触していたが現フレームで離れたとき
             {
                 roomba.Stop();
             }
@@ -117,12 +117,12 @@ public class Target : MonoBehaviour
     {
         if (roomba.open)
         {
-            if (currentState == true) //両者が接触状態のとき
+            if (_currentState == true) //両者が接触状態のとき
             {
-                roomba.MoveForward(inputSpeed);
+                roomba.MoveBack(_inputSpeed);
 
             }
-            else if (currentState == false && previousState == true) //前フレームでは接触していたが現フレームで離れたとき
+            else if (_currentState == false && _previousState == true) //前フレームでは接触していたが現フレームで離れたとき
             {
                 roomba.Stop();
             }

@@ -54,6 +54,7 @@ public class ButtonsForOperation : MonoBehaviour
             if (selectedCDRatio == "0.4") experimentManager.CDratio = 0.4f;
             else if (selectedCDRatio == "0.6") experimentManager.CDratio = 0.6f;
             else if (selectedCDRatio == "0.8") experimentManager.CDratio = 0.8f;
+            else if (selectedCDRatio == "1.0") experimentManager.CDratio = 1.0f;
             else if (selectedCDRatio == "1.2") experimentManager.CDratio = 1.2f;
             else if (selectedCDRatio == "1.4") experimentManager.CDratio = 1.4f;
             else experimentManager.CDratio = 1.6f;

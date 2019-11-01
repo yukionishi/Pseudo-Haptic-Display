@@ -84,13 +84,17 @@ public class Agent : MonoBehaviour
         else
         {
             //ターゲット接触時にエージェント側の移動量を操作
-            if (target._isInteract)
+            if (!target._isInteract)
             {
-                this.transform.position +=_transformVector * experimentManager.CDratio;
+                this.transform.position += _transformVector;
+            }
+            else if (target._isInteract && experimentManager.expCondition == ExperimentManager.ExpCondition.Visual_Physical_)
+            {
+                this.transform.position += _transformVector * (experimentManager.CDratio / 2);
             }
             else
             {
-                this.transform.position += _transformVector;
+                this.transform.position += _transformVector * experimentManager.CDratio;
             }
 
             //回転はコントローラに同期
